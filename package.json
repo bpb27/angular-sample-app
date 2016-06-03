@@ -1,0 +1,20 @@
+{
+  "name": "thejams",
+  "version": "1.0.0",
+  "description": "jam all around town",
+  "main": "app.js",
+  "scripts": {
+    "start": "http-server -a 0.0.0.0 -p 8000",
+    "test": "karma start karma.conf.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^0.9.0",
+    "karma": "^0.13.22",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-jasmine": "^0.3.5"
+  }
+}

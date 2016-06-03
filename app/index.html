@@ -1,0 +1,19 @@
+<!doctype html>
+<html ng-app="myApp">
+  	<head>
+    	<link rel="stylesheet" href="style.css">
+    	<script src="../bower_components/angular/angular.js"></script>
+    	<script src="app.js"></script>
+    	<script src="controllers.js"></script>
+  	</head>
+  	<body>
+    	<h1>Music</h1>
+    	<div ng-controller="MusicController">
+      	<ul>
+      		<li ng-repeat="song in songs">
+      			{{song.title}} by {{song.artist}}
+   			</li>
+      	</ul>
+    	</div>
+  	</body>
+</html>
