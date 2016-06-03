@@ -1,5 +1,7 @@
 angular.module('myApp').controller('MusicController', function ($scope) {
 
+	$scope.query = '';
+
 	$scope.songs = [
 		{title: 'Televators', artist: 'The Mars Volta'},
 		{title: 'Reptilla', artist: 'The Strokes'},

@@ -9,8 +9,9 @@
   	<body>
     	<h1>Music</h1>
     	<div ng-controller="MusicController">
+      	<input ng-model="query" type="text">
       	<ul>
-      		<li ng-repeat="song in songs">
+      		<li ng-repeat="song in songs | filter : query">
       			{{song.title}} by {{song.artist}}
    			</li>
       	</ul>
