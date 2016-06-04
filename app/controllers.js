@@ -1,14 +1,13 @@
-angular.module('myApp').controller('MusicController', function ($scope) {
+angular.module('myApp').controller('MusicController', ['$scope', 'DataService', function ($scope, DataService) {
+
+    DataService.songs.$loaded(function(songs){ 
+    	$scope.songs = songs;
+    });
 
 	$scope.query = '';
-
-	$scope.songs = [
-		{title: 'Televators', artist: 'The Mars Volta'},
-		{title: 'Reptilla', artist: 'The Strokes'},
-	];
 
 	$scope.getSongCount = function () {
 		return $scope.songs.length;
 	}
 	
-});
+}]);
