@@ -14,6 +14,8 @@ module.exports = function(config) {
     files: [
       'bower_components/angular/angular.min.js',
       'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/firebase/firebase.js',
+      'bower_components/angularfire/dist/angularfire.js',
       'app/*.js',
       'tests/*.test.js'
     ],
