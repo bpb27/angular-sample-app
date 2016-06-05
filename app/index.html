@@ -9,7 +9,10 @@
 	<script src="controllers.js"></script>
 	<script src="services.js"></script>
 </head>
-<body>
+<body ng-controller="AuthController">
+	<h3 ng-if="user">{{user.google.displayName}} is signed in.</h3>
+	<button ng-click="login()">Login</button>
+	<button ng-click="logout()">Logout</button>
 	<h1>Music</h1>
 	<div ng-controller="MusicController">
 		<input ng-model="query" type="text">
