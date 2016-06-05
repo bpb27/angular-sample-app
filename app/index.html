@@ -3,6 +3,7 @@
 <head>
 	<link rel="stylesheet" href="style.css">
 	<script src="../bower_components/angular/angular.js"></script>
+	<script src="../bower_components/angular-route/angular-route.js"></script>
 	<script src="../bower_components/firebase/firebase.js"></script>
 	<script src="../bower_components/angularfire/dist/angularfire.js"></script>
 	<script src="app.js"></script>
@@ -13,14 +14,8 @@
 	<h3 ng-if="user">{{user.google.displayName}} is signed in.</h3>
 	<button ng-click="login()">Login</button>
 	<button ng-click="logout()">Logout</button>
-	<h1>Music</h1>
-	<div ng-controller="MusicController">
-		<input ng-model="query" type="text">
-		<ul>
-			<li ng-repeat="song in songs | filter : query">
-			{{song.title}} by {{song.artist}}
-			</li>
-		</ul>
-	</div>
+	<div class="view-container">
+  		<div ng-view class="view-frame"></div>
+  	</div>
 </body>
 </html>
