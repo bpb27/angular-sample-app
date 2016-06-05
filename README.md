@@ -4,6 +4,8 @@
 Basic Angular App with Tests
 
 ## Setup
+* Replace the Firebase URL in app/services.js and app/controllers.js with your own URL
+* Add your own Travis CI badge to the README.md
 * `npm install`
 * `bower install`
 
