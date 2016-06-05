@@ -1,21 +1,36 @@
 <!doctype html>
 <html ng-app="myApp">
 <head>
-	<link rel="stylesheet" href="style.css">
-	<script src="../bower_components/angular/angular.js"></script>
-	<script src="../bower_components/angular-route/angular-route.js"></script>
+	
+	<link rel="stylesheet/less" href="style.less">
+	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+	
+	<script src="../bower_components/less/dist/less.js"></script>
+	<script src="../bower_components/angular/angular.min.js"></script>
+	<script src="../bower_components/angular-route/angular-route.min.js"></script>
 	<script src="../bower_components/firebase/firebase.js"></script>
-	<script src="../bower_components/angularfire/dist/angularfire.js"></script>
+	<script src="../bower_components/angularfire/dist/angularfire.min.js"></script>
+	<script src="../bower_components/angular-less/angular-less.min.js"></script>
+	
 	<script src="app.js"></script>
 	<script src="controllers.js"></script>
 	<script src="services.js"></script>
+
 </head>
+
 <body ng-controller="AuthController">
-	<h3 ng-if="user">{{user.google.displayName}} is signed in.</h3>
-	<button ng-click="login()">Login</button>
-	<button ng-click="logout()">Logout</button>
+	<div class="navigation-bar">
+		<div ng-if="user" class="nav-item">{{user.google.displayName}}</div>
+		<div ng-if="user" class="nav-item">
+			<button ng-click="logout()" class="btn btn-danger">Logout</button>
+		</div>
+		<div ng-if="!user" class="nav-item">
+			<button ng-click="login()" class="btn btn-primary">Login</button>
+		</div>
+	</div>
 	<div class="view-container">
   		<div ng-view class="view-frame"></div>
   	</div>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 // Any dependencies should also be added to karma.conf.js
 
-angular.module('myApp', ['firebase', 'ngRoute'])
+angular.module('myApp', ['firebase', 'ngRoute', 'ngLess'])
 	.config(['$routeProvider', function ($routeProvider) {
 		$routeProvider.
 			when('/', {
