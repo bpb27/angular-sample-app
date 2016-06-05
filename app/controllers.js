@@ -3,6 +3,13 @@ angular.module('myApp').controller("AuthController", ["$scope", "$firebaseAuth",
  	$scope.authObj = $firebaseAuth(new Firebase("https://thejams.firebaseio.com"));
  	
  	$scope.user = $scope.authObj.$getAuth();
+
+ 	$scope.authObj.$onAuth(function (authData) {
+		if (authData)
+			$scope.user = authData;
+		else
+			$scope.user = null;
+	});
  	
  	$scope.login = function () {
  		$scope.authObj.$authWithOAuthPopup("google").then(function (authData) {
