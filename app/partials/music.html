@@ -1,9 +1,12 @@
 <div ng-controller="MusicController" id="page-music" class="page">
 	<h1>Music</h1>
+	<a ng-href="#/music/new">Add New Song</a>
 	<input ng-model="query" type="text" placeholder="Search...">
 	<ul>
 		<li ng-repeat="song in songs | filter : query">
-			{{song.title}} by {{song.artist}}
+			{{song.title}} by {{song.artist}} 
+			<a ng-href="#/music/{{song.$id}}">Link</a>
+			<a ng-href="#/music/{{song.$id}}/edit">Edit</a>
 		</li>
 	</ul>
 </div>
