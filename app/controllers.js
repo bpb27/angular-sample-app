@@ -1,40 +1,57 @@
-angular.module('myApp').controller("AuthController", ["$scope", "$firebaseAuth", function ($scope, $firebaseAuth) {
-	
- 	$scope.authObj = $firebaseAuth(new Firebase("https://thejams.firebaseio.com"));
- 	
- 	$scope.user = $scope.authObj.$getAuth();
+var app = angular.module('myApp');
 
- 	$scope.authObj.$onAuth(function (authData) {
-		if (authData)
-			$scope.user = authData;
-		else
-			$scope.user = null;
-	});
- 	
- 	$scope.login = function () {
- 		$scope.authObj.$authWithOAuthPopup("google").then(function (authData) {
-			console.log("Logged in as:", authData.uid);
-		}).catch(function(error) {
-			console.error("Authentication failed:", error);
+app.controller("AuthController", 
+	["$scope", "$firebaseAuth", function ($scope, $firebaseAuth) {
+	
+	 	$scope.auth = $firebaseAuth(new Firebase("https://thejams.firebaseio.com"));
+	 	
+	 	$scope.user = $scope.auth.$getAuth();
+
+	 	$scope.auth.$onAuth(function (authData) {
+			if (authData)
+				$scope.user = authData;
+			else
+				$scope.user = null;
 		});
- 	}
+	 	
+	 	$scope.login = function () {
+	 		$scope.auth.$authWithOAuthPopup("google").then(function (authData) {
+				console.log("Logged in as:", authData.uid);
+			}).catch(function(error) {
+				console.error("Authentication failed:", error);
+			});
+	 	}
 
- 	$scope.logout = function () {
- 		$scope.authObj.$unauth();
- 	}
+	 	$scope.logout = function () {
+	 		$scope.auth.$unauth();
+	 	}
 
 }]);
 
-angular.module('myApp').controller('MusicController', ['$scope', 'DataService', function ($scope, DataService) {
+app.controller('MusicController', 
+	['$scope', 'DataService', function ($scope, DataService) {
 
-	DataService.songs.$loaded(function(songs){ 
-		$scope.songs = songs;
-	});
+		DataService.songs.$loaded(function(songs){ 
+			$scope.songs = songs;
+		});
 
-	$scope.query = '';
+		$scope.query = '';
 
-	$scope.getSongCount = function () {
-		return $scope.songs.length;
-	}
+		$scope.getSongCount = function () {
+			return $scope.songs.length;
+		}
 	
 }]);
+
+app.controller('SongController', 
+	['$scope', 'DataService', '$routeParams', function ($scope, DataService, $routeParams) {
+
+		DataService.songs.$loaded(function(songs){ 
+			$scope.song = songs.$getRecord($routeParams.id);
+		});
+
+}]);
+
+
+
+

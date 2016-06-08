@@ -1,0 +1,7 @@
+<div ng-controller="SongController" class="container">
+	<div ng-if="song">
+		<h3>{{song.title}} - {{song.artist}}</h3>
+		<h4>{{song.album}} ({{song.year}})</h4>
+		<img src="{{song.image}}" />
+	</div>
+</div>
