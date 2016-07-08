@@ -1,25 +1,33 @@
 describe('data service', function () {
 
 	var DataService;
-	var firebaseGlobal;
-
-	beforeEach(function(){
-		firebaseGlobal = window.Firebase;
-		window.Firebase = function () {};
-	});
+	var FirebaseArray;
 
 	beforeEach(module('myApp'));
 	
 	beforeEach(module(function ($provide) {
-  		$provide.value('$firebaseArray', mockFirebaseArrayService);
+  		$provide.value('$firebaseArray', function () {});
 	}));
 
 	beforeEach(inject(function (_DataService_) {
 		DataService = _DataService_;
+		DataService.songs = new createFirebaseArray(dbSongs);
+		DataService.comments = new createFirebaseArray(dbComments);
+		DataService.tags = new createFirebaseArray(dbTags);
 	}));
 
-	afterEach(function(){
-		window.Firebase = firebaseGlobal;
+	
+	describe('get returns a database', function () {
+
+		it('should return a database', function (done) {
+
+			DataService.get('songs').then(function (results) {
+				expect(results.length).toEqual(dbSongs.length);
+				done();
+			});
+
+		});
+
 	});
 
 	describe('getOne searches for a single record', function () {
@@ -36,7 +44,7 @@ describe('data service', function () {
 		it('should return a single record on single match', function (done) {
 			
 			DataService.getOne('songs', 'artist', 'Titus Andronicus').then(function (result) {
-				expect(result).toEqual(stubbedDatabase[0]);
+				expect(result).toEqual(dbSongs[0]);
 				done();
 			});
 		
@@ -45,16 +53,7 @@ describe('data service', function () {
 		it('should return the first record on multiple match', function (done) {
 			
 			DataService.getOne('songs', 'genre', 'rock').then(function (result) {
-				expect(result).toEqual(stubbedDatabase[0]);
-				done();
-			});
-		
-		});
-
-		it('should use the $getRecord method if searching by id', function (done) {
-			
-			DataService.getOne('songs', 'id', 2).then(function (result) {
-				expect(result).toEqual(stubbedDatabase[2]);
+				expect(result).toEqual(dbSongs[0]);
 				done();
 			});
 		
@@ -77,7 +76,7 @@ describe('data service', function () {
 		it('should return an array with a single record on single match', function (done) {
 			
 			DataService.getMany('songs', 'artist', 'Titus Andronicus').then(function (result) {
-				expect(result).toEqual([stubbedDatabase[0]]);
+				expect(result).toEqual([dbSongs[0]]);
 				done();
 			});
 		
@@ -86,7 +85,7 @@ describe('data service', function () {
 		it('should return an array with multiple records on multiple match', function (done) {
 			
 			DataService.getMany('songs', 'genre', 'rock').then(function (result) {
-				expect(result).toEqual(stubbedDatabase.splice(0,2));
+				expect(result).toEqual([dbSongs[0], dbSongs[1]]);
 				done();
 			});
 		
@@ -94,33 +93,79 @@ describe('data service', function () {
 	
 	});
 
-	var stubbedDatabase = [
-		{id: 0, artist: 'Titus Andronicus', genre: 'rock'}, 
-		{id: 1, artist: 'Cloud Nothings', genre: 'rock'}, 
-		{id: 2, differentProperty: 'differentValue'}
-	];
-	
-	// $firebaseArray method
-	stubbedDatabase.$getRecord = function (id) {
-		var match;
-		for (var i = 0; i < this.length; i++) {
-			if (this[i].id === id)
-				match = this[i];
-		}
-		return match;
-	}
+	describe('getChildRefs gets the full records of child refs', function () {		
 
-	function mockFirebaseArrayService () {
+		it('should return an empty array if no child refs', function (done) {
+			
+			DataService.getOne('songs', 'id', '1').then(function (song) {
+				var comments = DataService.getChildRefs('comments', song);
+				expect(comments).toEqual([]);
+				done();
+			});
 		
-		function Firebase () {}
+		});
+
+		it('should return an array of records if has child refs', function (done) {
+			
+			DataService.getOne('songs', 'id', '3').then(function (song) {
+				var comments = DataService.getChildRefs('comments', song);
+				var expectedComments = [dbComments[0], dbComments[1], dbComments[2]];
+				expect(comments).toEqual(expectedComments);
+				done();
+			});
 		
-		return {
-			$loaded: function (callback) {
-				return new Promise(function (resolve, reject) {
-					resolve(callback(stubbedDatabase));
-				})
+		});
+	
+	});
+
+	
+	var dbSongs = [
+		{
+			$id: '1',
+			artist: 'Titus Andronicus', 
+			genre: 'rock', 
+			tags: {
+				'1': true
 			}
-		}
-	}
+		}, 
+		
+		{
+			$id: '2',
+		 	artist: 'Cloud Nothings', 
+		 	genre: 'rock', 
+		 	tags: {
+				'1': true
+			}
+		}, 
+
+		{
+			$id: '3',
+		 	artist: 'Diarrhea Planet', 
+		 	genre: 'punk', 
+		 	comments: {
+				'1': true,
+				'2': true,
+				'3': true
+			}
+		},
+		
+		{
+			$id: '4',
+		 	badData: 'Missing Stuff'
+	 	}
+
+	];
+
+	var dbComments = [
+		{$id: '1', comment: 'Great'}, 
+		{$id: '2', comment: 'Bad'}, 
+		{$id: '3', comment: 'A real treat'},
+		{$id: '4', comment: 'Blasphemous'}
+	];
+
+	var dbTags = [
+		{$id: '1', text: 'rock out'},
+		{$id: '2', text: 'lame jams'}
+	];
 
 });

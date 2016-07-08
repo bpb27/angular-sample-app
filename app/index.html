@@ -19,7 +19,7 @@
 </head>
 
 <body ng-controller="AuthController">
-	<div class="navigation-bar">
+	<div id="navigation-bar">
 		<div class="nav-item">
 			<a ng-href="#/music">Music</a>
 		</div>
@@ -33,6 +33,9 @@
 	</div>
 	<div class="view-container">
   		<div ng-view class="view-frame"></div>
+  	</div>
+  	<div ng-controller="PlayerController" id="music-player">
+  		{{iframe}}
   	</div>
 </body>
 

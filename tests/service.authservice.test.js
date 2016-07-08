@@ -1,30 +1,23 @@
 describe('auth service', function () {
 
 	var AuthService;
-	var firebaseGlobal;
-	var user = {id: 1, user: 'Gary Nutmeats'};
-
-	beforeEach(function(){
-		firebaseGlobal = window.Firebase;
-		window.Firebase = function () {};
-	});
+	var DataService;
 
 	beforeEach(module('myApp'));
 	
 	beforeEach(module(function ($provide) {
-  		$provide.value('$firebaseAuth', mockFirebaseAuthService);
-  		$provide.value('DataService', mockDataService);
-  		$provide.value('$rootScope', mockRootscope);
+  		DataService = new MockDataService({users: [existingUser]});
+  		
+  		$provide.value('DataService', DataService);
+  		$provide.value('$firebaseAuth', MockFirebaseAuth);
+  		$provide.value('$rootScope', MockRootScope);
 	}));
 
 	beforeEach(inject(function (_AuthService_) {
 		AuthService = _AuthService_;
 	}));
 
-	afterEach(function(){
-		window.Firebase = firebaseGlobal;
-	});
-
+	
 	describe('On init', function () {
 		
 		it('should call $getAuth and add the $onAuth listener', function () {
@@ -34,6 +27,26 @@ describe('auth service', function () {
 		
 		});
 	
+	});
+
+	describe('On createUser', function () {
+
+		it('Should create and broadcast new user', function (done) {
+			
+			AuthService.createUser(newUserGoogleData);
+
+			setTimeout(function () {
+				expect(AuthService.user.gId).toEqual(newUser.gId);
+				expect(AuthService.user.displayName).toEqual(newUser.displayName);
+				expect(AuthService.user.image).toEqual(newUser.image);
+				expect(AuthService.user.sourceDefault).toBeDefined();
+				expect(AuthService.user.lastVisit).toBeDefined();
+				expect(MockRootScope.$broadcast).toHaveBeenCalledWith('user:updated', AuthService.user);
+				done();
+			}, 200);
+
+		});
+
 	});
 
 	describe('On login and logout', function () {
@@ -54,15 +67,17 @@ describe('auth service', function () {
 	
 	});
 
-	describe('On auth change', function () {
+	describe('On auth change listener called with google data', function () {
 		
-		it('should set user and broadcast change on login', function (done) {
+		it('should set user, broadcast change on login, and update lastVisit', function (done) {
 
-			AuthService.onAuthChange({google: {id: 1}});
-			setTimeout(function() {
+			AuthService.onAuthChange({google: existingUserGoogleData});
+			
+			setTimeout(function () {
 	        	
-	        	expect(AuthService.user).toEqual(user);
-	        	expect(mockRootscope.$broadcast).toHaveBeenCalledWith('user:updated', user);
+	        	expect(AuthService.user).toEqual(existingUser);
+	        	expect(MockRootScope.$broadcast).toHaveBeenCalledWith('user:updated', existingUser);
+	        	expect(DataService.users.$save).toHaveBeenCalled();
 	        	
 	        	done();
 	      
@@ -74,51 +89,73 @@ describe('auth service', function () {
 			
 			AuthService.onAuthChange();
 			expect(AuthService.user).toEqual(null);
-			expect(mockRootscope.$broadcast).toHaveBeenCalledWith('user:updated', null);
+			expect(MockRootScope.$broadcast).toHaveBeenCalledWith('user:updated', null);
 		
 		});
 
-		it('should handle login followed by logout', function () {
+		it('should handle login followed by logout', function (done) {
 			
-			AuthService.onAuthChange({google: {id: 1}});
-			setTimeout(function() {
+			AuthService.onAuthChange({google: existingUserGoogleData});
+
+			setTimeout(function () {
 	        	
-	        	expect(AuthService.user).toEqual(user);
-	        	expect(mockRootscope.$broadcast).toHaveBeenCalledWith('user:updated', user);
+	        	expect(AuthService.user).toEqual(existingUser);
+	        	expect(MockRootScope.$broadcast).toHaveBeenCalledWith('user:updated', existingUser);
+	        	expect(DataService.users.$save).toHaveBeenCalled();
 
 	        	AuthService.onAuthChange();
 				expect(AuthService.user).toEqual(null);
-				expect(mockRootscope.$broadcast).toHaveBeenCalledWith('user:updated', null);
+				expect(MockRootScope.$broadcast).toHaveBeenCalledWith('user:updated', null);
 	        	
 	        	done();
 	      
 	      }, 200);
 
 		});
+
+		it('should create new user if no user with matching google id is found', function (done) {
+
+			AuthService.createUser = jasmine.createSpy('createUser');			
+			AuthService.onAuthChange({google: {id: 5}});
+			
+			setTimeout(function () {
+				expect(AuthService.createUser).toHaveBeenCalled();
+				done();
+			}, 200);
+
+		});
 	
 	});
 
-	function mockFirebaseAuthService () {
-		
-		return {
-			$getAuth: jasmine.createSpy('$getAuth'),
-			$authWithOAuthPopup: jasmine.createSpy('$authWithOAuthPopup'),
-			$unauth: jasmine.createSpy('$unauth'),
-			$onAuth: jasmine.createSpy('$onAuth')
-		}
 	
-	}
-
-	var mockDataService = {
-		getOne: function (db, key, value) {
-			return new Promise(function (resolve, reject) {
-				resolve(user);
-			});
-		}
+	var existingUser = {
+		id: 1,
+		gId: 123,
+		displayName: 'Gary Nutmeats', 
+		image: 'www.google.com/gn',
+		sourceDefault: 'Spotify',
+		lastVisit: '1/1/1999'
 	};
 
-	var mockRootscope = {
-		$broadcast: jasmine.createSpy('$broadcast')
+	var existingUserGoogleData = {
+		id: 123,
+		displayName: 'Gary Nutmeats', 
+		image: 'www.google.com/gn'
+	};
+
+	var newUser = {
+		id: 2,
+		gId: 456,
+		displayName: 'Bobby Grapefruits', 
+		image: 'www.google.com/bg',
+		sourceDefault: 'Spotify',
+		lastVisit: '1/1/1999'
+	};
+
+	var newUserGoogleData = {
+		id: 456,
+		displayName: 'Bobby Grapefruits', 
+		profileImageURL: 'www.google.com/bg'
 	};
 
 });

@@ -19,7 +19,9 @@ module.exports = function(config) {
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-less/angular-less.js',
       'app/*.js',
-      'tests/*.test.js'
+      'tests/*.test.js',
+      'tests/test-utils.js',
+      'tests/test-stubs.js'
     ],
 
     // list of files to exclude

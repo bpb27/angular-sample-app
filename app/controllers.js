@@ -18,22 +18,37 @@ app.controller('AuthController',
 }]);
 
 app.controller('MusicController', 
-	['$scope', 'DataService', function ($scope, DataService) {
+	['$scope', '$rootScope', 'DataService', function ($scope, $rootScope, DataService) {
 
-	DataService.songs.$loaded(function (songs) { 
-		$scope.songs = songs;
-	});
-
+	$scope.songs = [];
 	$scope.query = '';
 
-	$scope.getSongCount = function () {
-		return $scope.songs.length;
+	DataService.get('songs').then(function (songs) { 
+		$scope.songs = songs;
+		$scope.$apply();
+	});
+
+	$scope.getTags = function (song) {
+		return DataService.getChildRefs('tags', song);
+	}
+
+	$scope.play = function (song) {
+		$rootScope.$broadcast('music:play', song.spotifyLink);
 	}
 	
 }]);
 
+app.controller('PlayerController', 
+	['$scope', function ($scope) {
+
+	$scope.$on('music:play', function (event, data) {
+     	$scope.song = data
+   });
+
+}]);
+
 app.controller('SongController', 
-	['$scope', 'DataService', '$routeParams', function ($scope, DataService, $routeParams) {
+	['$scope', '$routeParams', 'DataService', function ($scope, $routeParams, DataService) {
 
 	DataService.getOne('songs', 'id', $routeParams.id).then(function (song) {
 		$scope.song = song;

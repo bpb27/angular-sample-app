@@ -1,28 +1,37 @@
 describe('music controller', function () {
 
-	var scope, controller;
+	var DataService;
+	var scope;
+	var controller;
 
 	beforeEach(module('myApp'));
 
+	beforeEach(function () {
+  		DataService = new MockDataService({songs: songs});
+	});
+
 	beforeEach(inject(function($controller){
-	  	scope = {};
-	  	controller = $controller('MusicController', { $scope: scope, DataService: mockDataService });
+	  	scope = { $apply: function () {} };
+	  	controller = $controller('MusicController', { $scope: scope, DataService: DataService });
 	}));
 
-	describe('songs', function () {
+	describe('on init', function () {
 		
-		it('total should equal 0', function () {
-			expect(scope.getSongCount()).toEqual(0);
+		it('should get all songs', function (done) {
+			
+			setTimeout(function () {
+				expect(scope.songs.length).toEqual(3);
+				done();
+			}, 200);
+		
 		});	
 	
 	});
 
-	var mockDataService = {
-		songs: {
-			$loaded: function (callback) {
-				callback([]);
-			}
-		}
-	};
+	var songs = [
+		{id: 0, artist: 'Titus Andronicus'}, 
+		{id: 1, artist: 'Cloud Nothings'}, 
+		{id: 2, badData: 'Missing Stuff'}
+	];
 
 });

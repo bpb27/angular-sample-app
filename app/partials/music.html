@@ -7,6 +7,8 @@
 			{{song.title}} by {{song.artist}} 
 			<a ng-href="#/music/{{song.$id}}">Link</a>
 			<a ng-href="#/music/{{song.$id}}/edit">Edit</a>
+			<button ng-click="play(song)">Play</butoon>
+			<button ng-repeat="tag in getTags(song)">{{tag.name}}</button>
 		</li>
 	</ul>
 </div>
