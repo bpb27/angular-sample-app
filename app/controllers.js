@@ -39,10 +39,14 @@ app.controller('MusicController',
 }]);
 
 app.controller('PlayerController', 
-	['$scope', function ($scope) {
+	['$scope', 'SpotifyService', function ($scope, SpotifyService) {
+
+	$scope.close = function () {
+		$scope.embed = '';
+	}
 
 	$scope.$on('music:play', function (event, data) {
-     	$scope.song = data
+     	$scope.embed = SpotifyService.getEmbedFrame('track', data);
    });
 
 }]);
