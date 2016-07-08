@@ -75,7 +75,7 @@ describe('spotify service', function () {
 
 		it('properly forms track iframe', function () {
 			
-			var html = SpotifyService.getEmbedFrame('track', trackId);
+			var html = SpotifyService.getEmbedFrame('track', trackId).$$unwrapTrustedValue();
 			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:track:' + trackId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
 			
 			expect(html).toEqual(expectation);
@@ -84,11 +84,20 @@ describe('spotify service', function () {
 
 		it('properly forms album iframe', function () {
 			
-			var html = SpotifyService.getEmbedFrame('album', albumId);
+			var html = SpotifyService.getEmbedFrame('album', albumId).$$unwrapTrustedValue();
 			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:album:' + albumId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
 			
 			expect(html).toEqual(expectation);
 		
+		});
+
+		it('properly handles receiving a spotify uri with extra preceding information', function () {
+
+			var html = SpotifyService.getEmbedFrame('track', 'spotify:track:' + trackId).$$unwrapTrustedValue();
+			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:track:' + trackId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
+			
+			expect(html).toEqual(expectation);
+
 		});
 
 	});

@@ -125,7 +125,7 @@ app.factory('DataService', ['$firebaseArray', function ($firebaseArray) {
 
 }]);
 
-app.factory('SpotifyService', ['$http', function ($http) {
+app.factory('SpotifyService', ['$http', '$sce', function ($http, $sce) {
 	
 	return {
 		
@@ -146,8 +146,9 @@ app.factory('SpotifyService', ['$http', function ($http) {
 		},
 
 		getEmbedFrame: function (type, uri) {
-			var identifier = 'spotify:' + type + ':' + uri;
-			return '<iframe src="https://embed.spotify.com/?uri=' + identifier + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
+			if (uri.indexOf(':') !== -1)
+				uri = this.pullUri(uri);
+			return $sce.trustAsHtml('<iframe src="https://embed.spotify.com/?uri=' + 'spotify:' + type + ':' + uri + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>');
 		},
 		
 		getTrack: function (uri) {
@@ -165,10 +166,6 @@ app.factory('SpotifyService', ['$http', function ($http) {
 					return {};
 				}
 			});
-		},
-
-		play: function (type, uri) {
-			//$rootScope.$broadcast('music:play', this.getEmbedFrame(type, uri));
 		},
 
 		pullUri: function (str) {

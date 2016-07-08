@@ -35,7 +35,8 @@
   		<div ng-view class="view-frame"></div>
   	</div>
   	<div ng-controller="PlayerController" id="music-player">
-  		{{iframe}}
+  		 <a ng-if="embed" ng-click="close()">Close Player</a>
+  		 <div ng-bind-html="embed"></div>
   	</div>
 </body>
 
