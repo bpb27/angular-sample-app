@@ -1,3 +1,6 @@
-<div ng-controller="SongController" class="container">
+<div ng-controller="SongNewController" class="container">
 	<h1>Add a new song.</h1>
+	<input type="text" ng-model="newUri">
+	<button ng-click="getSong(newUri)">Get</button>
+	<div ng-bind-html="embed"></div>
 </div>

@@ -27,17 +27,17 @@ describe('spotify service', function () {
 
 		it('returns an empty string if no id is found', function () {
 
-			expect(SpotifyService.pullUri()).toEqual('');
-			expect(SpotifyService.pullUri('')).toEqual('');
-			expect(SpotifyService.pullUri('no_id_here')).toEqual('');
+			expect(SpotifyService.getUri()).toEqual('');
+			expect(SpotifyService.getUri('')).toEqual('');
+			expect(SpotifyService.getUri('no_id_here')).toEqual('');
 
 		});
 
 		it('correctly parses URIs, links, embed code', function () {
 			
-			expect(SpotifyService.pullUri(song.uri)).toEqual(trackId);
-			expect(SpotifyService.pullUri(song.link)).toEqual(trackId);
-			expect(SpotifyService.pullUri(song.embed)).toEqual(trackId);
+			expect(SpotifyService.getUri(song.uri)).toEqual(trackId);
+			expect(SpotifyService.getUri(song.link)).toEqual(trackId);
+			expect(SpotifyService.getUri(song.embed)).toEqual(trackId);
 
 		});
 
@@ -57,6 +57,17 @@ describe('spotify service', function () {
 
 		});
 
+		it('does not make a GET request if given a bad uri', function () {
+			
+			console.log(SpotifyService.getTrack('fakeUri').then);
+			// SpotifyService.getTrack('fakeUri').then(function (results) {
+			// 	expect(result).toEqual('butts');
+			// }, function (error) {
+			// 	expect(error).toEqual('Invalid URI');
+			// });
+
+		});
+
 		it('returns the proper album data', function () {
 
 			$httpBackend.expectGET('https://api.spotify.com/v1/albums/' + albumId);
@@ -73,7 +84,7 @@ describe('spotify service', function () {
 
 	describe('creating embeddable iframe', function () {
 
-		it('properly forms track iframe', function () {
+		it('forms track iframe', function () {
 			
 			var html = SpotifyService.getEmbedFrame('track', trackId).$$unwrapTrustedValue();
 			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:track:' + trackId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
@@ -82,7 +93,7 @@ describe('spotify service', function () {
 		
 		});
 
-		it('properly forms album iframe', function () {
+		it('forms album iframe', function () {
 			
 			var html = SpotifyService.getEmbedFrame('album', albumId).$$unwrapTrustedValue();
 			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:album:' + albumId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
@@ -91,13 +102,31 @@ describe('spotify service', function () {
 		
 		});
 
-		it('properly handles receiving a spotify uri with extra preceding information', function () {
+		it('forms a trackset iframe', function () {
+			
+			var html = SpotifyService.getEmbedFrame('trackset', [model, model, {}]).$$unwrapTrustedValue();
+			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:jams:' + trackId + ',' + trackId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
+			
+			expect(html).toEqual(expectation);
+		
+		});
+
+		it('handles receiving a spotify uri with extra preceding information', function () {
 
 			var html = SpotifyService.getEmbedFrame('track', 'spotify:track:' + trackId).$$unwrapTrustedValue();
 			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:track:' + trackId + '" width="100%" height="80" frameborder="0" allowtransparency="true"></iframe>';
 			
 			expect(html).toEqual(expectation);
 
+		});
+
+		it('takes an optional width parameter', function () {
+			
+			var html = SpotifyService.getEmbedFrame('track', trackId, 300).$$unwrapTrustedValue();
+			var expectation = '<iframe src="https://embed.spotify.com/?uri=spotify:track:' + trackId + '" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>';
+			
+			expect(html).toEqual(expectation);
+		
 		});
 
 	});
