@@ -9,7 +9,7 @@
 			<a ng-href="#/music/{{song.$id}}">Link</a>
 			<a ng-href="#/music/{{song.$id}}/edit">Edit</a>
 			<button ng-click="play(song)">Play</butoon>
-			<button ng-repeat="tag in getTags(song)">{{tag.name}}</button>
+				<button ng-repeat="tag in getTags(song) track by $index">{{tag.name}}</button>
 		</li>
 	</ul>
 </div>

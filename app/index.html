@@ -1,17 +1,18 @@
 <!doctype html>
 <html ng-app="myApp">
+
 <head>
-	
+
 	<link rel="stylesheet/less" href="style.less">
 	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
-	
+
 	<script src="../bower_components/less/dist/less.js"></script>
 	<script src="../bower_components/angular/angular.min.js"></script>
 	<script src="../bower_components/angular-route/angular-route.min.js"></script>
 	<script src="../bower_components/firebase/firebase.js"></script>
 	<script src="../bower_components/angularfire/dist/angularfire.min.js"></script>
 	<script src="../bower_components/angular-less/angular-less.min.js"></script>
-	
+
 	<script src="app.js"></script>
 	<script src="controllers.js"></script>
 	<script src="services.js"></script>
@@ -32,12 +33,12 @@
 		</div>
 	</div>
 	<div class="view-container">
-  		<div ng-view class="view-frame"></div>
-  	</div>
-  	<div ng-controller="PlayerController" id="music-player">
-  		 <a ng-if="embed" ng-click="close()">Close Player</a>
-  		 <div ng-bind-html="embed"></div>
-  	</div>
+		<div ng-view class="view-frame"></div>
+	</div>
+	<div ng-controller="PlayerController" id="music-player">
+		<a ng-if="embed" ng-click="close()">Close Player</a>
+		<div ng-bind-html="embed"></div>
+	</div>
 </body>
 
 </html>
