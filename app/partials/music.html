@@ -4,12 +4,12 @@
 	<button ng-click="playAll()">Play All</button>
 	<input ng-model="query" type="text" placeholder="Search...">
 	<ul>
-		<li ng-repeat="song in (filteredSongs = (songs | filter : query))">
+		<li ng-repeat="song in (filteredSongs = (songs | filter : query | tagMatch:selectedTag ))">
 			{{song.title}} by {{song.artist}}
 			<a ng-href="#/music/{{song.$id}}">Link</a>
 			<a ng-href="#/music/{{song.$id}}/edit">Edit</a>
 			<button ng-click="play(song)">Play</butoon>
-				<button ng-repeat="tag in getTags(song) track by $index">{{tag.name}}</button>
+				<button ng-repeat="tag in getTags(song) track by $index" ng-click=selectTag(tag.name)>{{tag.name}}</button>
 		</li>
 	</ul>
 </div>
