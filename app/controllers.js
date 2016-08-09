@@ -20,18 +20,23 @@ app.controller('MusicController', ['$scope', '$rootScope', 'DataService', functi
 
     $scope.songs = [];
     $scope.query = '';
+    $scope.selectedTag = null;
 
     DataService.get('songs').then(function (songs) {
         $scope.songs = songs;
         $scope.$apply();
     });
 
+    $scope.getComments = function (song) {
+        return DataService.getChildRefs('comments', song);
+    }
+
     $scope.getTags = function (song) {
         return DataService.getChildRefs('tags', song);
     }
 
-    $scope.getComments = function (song) {
-        return DataService.getChildRefs('comments', song);
+    $scope.selectTag = function (tag) {
+        $scope.selectedTag = $scope.selectedTag === tag ? null : tag;
     }
 
     $scope.play = function (song) {
