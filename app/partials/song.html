@@ -1,7 +1,18 @@
 <div ng-controller="SongController" class="container">
 	<div ng-if="song">
-		<h3>{{song.title}} - {{song.artist}}</h3>
-		<h4>{{song.album}} ({{song.year}})</h4>
-		<img src="{{song.image}}" />
+		<div class="col-md-4">
+			<div ng-bind-html="embed"></div>
+		</div>
+		<div class="col-md-4">
+			<img src="{{song.image}}" />
+			<button ng-repeat="tag in getTags(song)">{{tag.name}}</button>
+		</div>
+		<div class="col-md-4">
+			<h3>{{song.title}} - {{song.artist}}</h3>
+			<h4>{{song.album}} ({{song.year}})</h4>
+			<p><b>{{song.submittedBy}}:</b> {{song.review}}</p>
+			<br>
+			<h6 ng-repeat="comment in getComments(song)"><b>{{comment.postedBy}}: </b>{{comment.comment}}</h6>
+		</div>
 	</div>
 </div>
