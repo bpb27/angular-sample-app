@@ -105,7 +105,9 @@ app.factory('DataService', ['$firebaseArray', function ($firebaseArray) {
         getChildRefs: function (db, record) {
             return Object.keys(record[db] || {}).map(function (id) {
                 return this[db].$getRecord(id);
-            }.bind(this));
+            }.bind(this)).filter(function (item) {
+                return item;
+            });
         }
 
     };
@@ -147,17 +149,18 @@ app.factory('SpotifyService', ['$http', '$sce', function ($http, $sce) {
             });
         },
 
-        getEmbedFrame: function (type, uri, width) {
+        getEmbedFrame: function (type, uri, optionalWidth, optionalHeight) {
             if (!uri) return '';
 
-            var width = typeof width === 'number' ? width.toString() : '100%';
+            var width = optionalWidth ? optionalWidth.toString() : '100%';
+            var height = optionalHeight ? optionalHeight.toString() : '80';
 
             if (type === 'trackset')
                 uri = pullSpotifyIdsFromList(uri);
             else if (uri.indexOf(':') !== -1)
                 uri = pullUri(uri);
 
-            return $sce.trustAsHtml('<iframe src="https://embed.spotify.com/?uri=' + 'spotify:' + type + ':' + uri + '" width="' + width + '" height="80" frameborder="0" allowtransparency="true"></iframe>');
+            return $sce.trustAsHtml('<iframe src="https://embed.spotify.com/?uri=' + 'spotify:' + type + ':' + uri + '" width="' + width + '" height="' + height + '" frameborder="0" allowtransparency="true"></iframe>');
         },
 
         getTrack: function (uri) {

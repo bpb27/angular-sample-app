@@ -1,6 +1,9 @@
 <div ng-controller="SongNewController" class="container">
 	<h1>Add a new song.</h1>
+	<div ng-bind-html="embed"></div>
 	<input type="text" ng-model="newUri">
 	<button ng-click="getSong(newUri)">Get</button>
-	<div ng-bind-html="embed"></div>
+	<br>
+	<textarea ng-if="embed" ng-model="$parent.review" placeholder="Your review..."></textarea>
+	<button ng-if="embed" ng-click=saveSong()>Submit</button>
 </div>

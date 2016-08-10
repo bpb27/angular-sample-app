@@ -65,32 +65,40 @@ app.controller('PlayerController', ['$scope', 'SpotifyService', function ($scope
 
 }]);
 
-app.controller('SongController', ['$scope', '$routeParams', 'DataService', function ($scope, $routeParams, DataService) {
+app.controller('SongController', ['$scope', '$routeParams', 'DataService', 'SpotifyService', function ($scope, $routeParams, DataService, SpotifyService) {
 
     DataService.getOne('songs', 'id', $routeParams.id).then(function (song) {
         $scope.song = song;
+        $scope.embed = song.albumLink ? SpotifyService.getEmbedFrame('album', song.albumLink, 300, 500) : '';
+        console.log(song);
     });
+
+    $scope.getComments = function (song) {
+        return DataService.getChildRefs('comments', song);
+    }
+
+    $scope.getTags = function (song) {
+        return DataService.getChildRefs('tags', song);
+    }
 
 }]);
 
 app.controller('SongNewController', ['$scope', '$routeParams', 'DataService', 'SpotifyService', function ($scope, $routeParams, DataService, SpotifyService) {
 
     $scope.error = '';
-    $scope.review = '';
     $scope.song = {};
 
     $scope.getSong = function (uri) {
         SpotifyService.getTrack(uri).then(function (track) {
             $scope.song = track;
             $scope.embed = SpotifyService.getEmbedFrame('track', track.spotifyTrack, 300);
-        }, function () {
-            $scope.error = "Apologies Señor, but that appears to be a bullshit spotify URI.";
         });
     }
 
     $scope.saveSong = function () {
         if (!$scope.review)
             return $scope.error = 'Dearest Señor, a review please.';
+        console.log($scope.song, $scope.review);
     }
 
 }]);
